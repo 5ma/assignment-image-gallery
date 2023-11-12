@@ -7,122 +7,122 @@ export type GalleryImageItem = {
 export const galleryImages: GalleryImageItem[] = [
   {
     id: 1,
-    src: 'pic_016.png',
+    src: 'pic_016.webp',
     alt: ''
   },
   {
     id: 2,
-    src: 'pic_015.png',
+    src: 'pic_015.webp',
     alt: ''
   },
   {
     id: 3,
-    src: 'pic_014.png',
+    src: 'pic_014.webp',
     alt: ''
   },
   {
     id: 4,
-    src: 'pic_013.png',
+    src: 'pic_013.webp',
     alt: ''
   },
   {
     id: 5,
-    src: 'pic_012.png',
+    src: 'pic_012.webp',
     alt: ''
   },
   {
     id: 6,
-    src: 'pic_011.png',
+    src: 'pic_011.webp',
     alt: ''
   },
   {
     id: 7,
-    src: 'pic_010.png',
+    src: 'pic_010.webp',
     alt: ''
   },
   {
     id: 8,
-    src: 'pic_009.png',
+    src: 'pic_009.webp',
     alt: ''
   },
   {
     id: 9,
-    src: 'pic_008.png',
+    src: 'pic_008.webp',
     alt: ''
   },
   {
     id: 10,
-    src: 'pic_007.png',
+    src: 'pic_007.webp',
     alt: ''
   },
   {
     id: 11,
-    src: 'pic_006.png',
+    src: 'pic_006.webp',
     alt: ''
   },
   {
     id: 12,
-    src: 'pic_005.png',
+    src: 'pic_005.webp',
     alt: ''
   },
   {
     id: 13,
-    src: 'pic_004.png',
+    src: 'pic_004.webp',
     alt: ''
   },
   {
     id: 14,
-    src: 'pic_005.png',
+    src: 'pic_005.webp',
     alt: ''
   },
   {
     id: 15,
-    src: 'pic_019.png',
+    src: 'pic_019.webp',
     alt: ''
   },
   {
     id: 16,
-    src: 'pic_018.png',
+    src: 'pic_018.webp',
     alt: ''
   },
   {
     id: 17,
-    src: 'pic_017.png',
+    src: 'pic_017.webp',
     alt: ''
   },
   {
     id: 18,
-    src: 'pic_022.png',
+    src: 'pic_022.webp',
     alt: ''
   },
   {
     id: 19,
-    src: 'pic_021.png',
+    src: 'pic_021.webp',
     alt: ''
   },
   {
     id: 20,
-    src: 'pic_026.png',
+    src: 'pic_026.webp',
     alt: ''
   },
   {
     id: 21,
-    src: 'pic_023.png',
+    src: 'pic_023.webp',
     alt: ''
   },
   {
     id: 22,
-    src: 'pic_025.png',
+    src: 'pic_025.webp',
     alt: ''
   },
   {
     id: 23,
-    src: 'pic_024.png',
+    src: 'pic_024.webp',
     alt: ''
   },
   {
     id: 24,
-    src: 'pic_020.png',
+    src: 'pic_020.webp',
     alt: ''
   }
 ]
