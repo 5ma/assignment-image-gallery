@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import GallerySwitcherVue from "./components/GallerySwitcher.vue";
+import GallerySwitcherVue from '@/components/GallerySwitcher.vue'
 
 export default {
   components: {
@@ -11,3 +11,10 @@ export default {
   }
 }
 </script>
+
+<style>
+img {
+  max-width: 100%;
+  height: auto;
+}
+</style>
