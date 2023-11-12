@@ -1,0 +1,97 @@
+$breakpoint: 960; // breakpoint
+
+@mixin pc {
+  @media (width > #{$breakpoint}px) {
+    @content;
+  }
+}
+
+@mixin sp {
+  @media (width <= #{$breakpoint}px) {
+    @content;
+  }
+}
+
+@mixin hover {
+  @media (hover: hover) {
+    @content;
+  }
+}
+
+@mixin hover-none {
+  @media (hover: none) {
+    @content;
+  }
+}
+
+@mixin reduce {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+@mixin max-w($wid) {
+  @media (width <= #{$wid}px) {
+    @content;
+  }
+}
+
+@mixin min-w($wid) {
+  @media (width >= #{$wid}px) {
+    @content;
+  }
+}
+
+@mixin max-h($wid) {
+  @media (height <= #{$wid}px) {
+    @content;
+  }
+}
+
+@mixin min-h($wid) {
+  @media (height >= #{$wid}px) {
+    @content;
+  }
+}
+
+@mixin narrow {
+  @media (width <= 374px) {
+    @content;
+  }
+}
+
+@mixin port {
+  @media (orientation: portrait) {
+    @content;
+  }
+}
+
+@mixin land {
+  @media (orientation: landscape) {
+    @content;
+  }
+}
+
+@mixin pc-port {
+  @media (width > #{$breakpointSp}px) and (orientation: portrait) {
+    @content;
+  }
+}
+
+@mixin pc-land {
+  @media (width > #{$breakpointSp}px) and (orientation: landscape) {
+    @content;
+  }
+}
+
+@mixin sp-port {
+  @media (width <= #{$breakpointSp}px) and (orientation: portrait) {
+    @content;
+  }
+}
+
+@mixin sp-land {
+  @media (width <= #{$breakpointSp}px) and (orientation: landscape) {
+    @content;
+  }
+}
