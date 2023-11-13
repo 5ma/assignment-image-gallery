@@ -4,6 +4,9 @@
     @touchstart="handleTouchStart"
     @touchmove="handleTouchMove"
     @touchend="handleTouchEnd"
+    @dragstart="handleDragStart"
+    @drag="handleDrag"
+    @dragend="handleDragEnd"
   >
     <div class="slider__container">
       <div class="slider__wrapper" ref="wrapper">
@@ -25,6 +28,9 @@
 import { type PropType, defineComponent } from 'vue'
 import type { GalleryImageItem } from '@/data/gallery-images'
 import ImageSlide from '@/components/ImageSlide.vue'
+
+// この数値よりスワイプ or ドラッグ距離が短い場合、スライダーは動かない
+const minimumDistance = 30
 
 export default defineComponent({
   components: {
@@ -49,15 +55,21 @@ export default defineComponent({
     activeIndex: number
     totalSlideLength: number
     slideWidth: number
-    startX: number | undefined
-    endX: number | undefined
+    touchStartX: number | undefined
+    touchEndX: number | undefined
+    isDragging: boolean
+    dragStartX: number | undefined
+    dragEndX: number | undefined
   } {
     return {
       activeIndex: 0, // 現在activeなスライドのindex南郷（start: 0）
       totalSlideLength: this.images.length, // スライド総数
       slideWidth: 0, // スライド一枚の横幅（px）
-      startX: undefined,
-      endX: undefined
+      touchStartX: undefined,
+      touchEndX: undefined,
+      isDragging: false,
+      dragStartX: undefined,
+      dragEndX: undefined
     }
   },
   computed: {
@@ -123,25 +135,21 @@ export default defineComponent({
     handleTouchStart(event: TouchEvent) {
       event.preventDefault()
 
-      console.log('handleTouchStart', event)
-      this.startX = event.touches[0].pageX
-      this.$debug('this.startX', this.startX)
+      this.touchStartX = event.touches[0].pageX
+      this.$debug('this.touchStartX', this.touchStartX)
     },
     handleTouchMove(event: TouchEvent) {
       event.preventDefault()
 
-      console.log('handleTouchMove', event)
-      this.endX = event.changedTouches[0].pageX
-      this.$debug('this.endX', this.endX)
+      this.touchEndX = event.changedTouches[0].pageX
+      this.$debug('this.touchEndX', this.touchEndX)
     },
     handleTouchEnd(event: TouchEvent) {
       event.preventDefault()
 
-      if (!this.startX || !this.endX) return
+      if (!this.touchStartX || !this.touchEndX) return
 
-      // この数値よりスワイプ距離が短い場合、スライダーは動かない
-      const minimumDistance = 30
-      const distanceX = this.endX - this.startX
+      const distanceX = this.touchEndX - this.touchStartX
       // 移動距離がminimumDistance以下の場合はreturnする
       if (Math.abs(distanceX) <= minimumDistance) return
 
@@ -150,6 +158,38 @@ export default defineComponent({
         this.slideToPrev()
       } else {
         this.$debug('左スワイプ')
+        this.slideToNext()
+      }
+    },
+    handleDragStart(event: DragEvent) {
+      this.isDragging = true
+
+      this.dragStartX = event.pageX
+      this.$debug('handleDragStart', event, event.pageX)
+    },
+    handleDrag(event: DragEvent) {
+      // dragEndイベント発火前に必ずpageXが0になるので、その値は無視する
+      if (!this.isDragging || event.pageX === 0) return
+      this.$debug('handleDrag', event)
+      this.dragEndX = event.pageX
+    },
+    handleDragEnd(event: DragEvent) {
+      this.$debug('handleDragEnd', event)
+      if (!this.isDragging) return
+      this.isDragging = false
+
+      if (!this.dragStartX || !this.dragEndX) return
+
+      const distanceX = this.dragEndX - this.dragStartX
+      this.$debug('distanceX', distanceX)
+      // 移動距離がminimumDistance以下の場合はreturnする
+      if (Math.abs(distanceX) <= minimumDistance) return
+
+      if (distanceX > 0) {
+        this.$debug('右へドラッグ')
+        this.slideToPrev()
+      } else {
+        this.$debug('左へドラッグ')
         this.slideToNext()
       }
     }
