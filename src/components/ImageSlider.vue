@@ -1,33 +1,22 @@
 <template>
-  <div class="slider">
+  <div
+    class="slider"
+    @touchstart="handleTouchStart"
+    @touchmove="handleTouchMove"
+    @touchend="handleTouchEnd"
+  >
     <div class="slider__container">
       <div class="slider__wrapper" ref="wrapper">
-        <div
-          class="slider__item"
-          v-for="image in images"
+        <ImageSlide
+          v-for="(image, index) in images"
           :key="image.id"
           :style="gapStyle"
+          :image="{ src: image.src, alt: image.alt }"
+          :id="image.id"
+          :isCurrent="activeIndex === index"
           ref="item"
-        >
-          <img :src="getImagePath(image.src)" :alt="image.alt" />
-        </div>
+        />
       </div>
-    </div>
-    <div class="slider__controls">
-      <button
-        class="slider__navigation slider__navigation--prev"
-        type="button"
-        @click="slideToPrev"
-      >
-        prev
-      </button>
-      <button
-        class="slider__navigation slider__navigation--next"
-        type="button"
-        @click="slideToNext"
-      >
-        next
-      </button>
     </div>
   </div>
 </template>
@@ -35,12 +24,11 @@
 <script lang="ts">
 import { type PropType, defineComponent } from 'vue'
 import type { GalleryImageItem } from '@/data/gallery-images'
-import { useImagePath } from '@/composables/use-image-path'
+import ImageSlide from '@/components/ImageSlide.vue'
 
 export default defineComponent({
-  setup() {
-    const { getImagePath } = useImagePath()
-    return { getImagePath }
+  components: {
+    ImageSlide
   },
   props: {
     images: {
@@ -57,11 +45,19 @@ export default defineComponent({
     },
     id: Number
   },
-  data() {
+  data(): {
+    activeIndex: number
+    totalSlideLength: number
+    slideWidth: number
+    startX: number | undefined
+    endX: number | undefined
+  } {
     return {
       activeIndex: 0, // 現在activeなスライドのindex南郷（start: 0）
       totalSlideLength: this.images.length, // スライド総数
-      slideWidth: 0 // スライド一枚の横幅（px）
+      slideWidth: 0, // スライド一枚の横幅（px）
+      startX: undefined,
+      endX: undefined
     }
   },
   computed: {
@@ -81,7 +77,7 @@ export default defineComponent({
   },
   methods: {
     slideToPrev() {
-      this.$debug('=== slide to PREV ===');
+      this.$debug('=== slide to PREV ===')
       // this.$debug('slide to === PREV ===')
       // ループモードがfalseで、かつ最初のスライドの場合はこれ以上戻れないのでreturnする
       if (!this.isLoop && this.isFirstSlide) return
@@ -111,10 +107,10 @@ export default defineComponent({
       this.slideToMove(this.activeIndex)
     },
     updateSlideWidth() {
-      const itemElms = this.$refs.item as HTMLDivElement[]
-      if (itemElms && itemElms.length > 0) {
+      const itemInstance = this.$refs.item as InstanceType<typeof ImageSlide>[]
+      if (itemInstance && itemInstance.length > 0) {
         // 最初のスライドの幅を取得
-        this.slideWidth = itemElms[0].getBoundingClientRect().width
+        this.slideWidth = itemInstance[0].$el.getBoundingClientRect().width
       }
     },
     calculateTranslate(index: number) {
@@ -123,6 +119,39 @@ export default defineComponent({
     },
     isValidIndexNumber(index: number) {
       return 0 <= index && index <= this.totalSlideLength - 1
+    },
+    handleTouchStart(event: TouchEvent) {
+      event.preventDefault()
+
+      console.log('handleTouchStart', event)
+      this.startX = event.touches[0].pageX
+      this.$debug('this.startX', this.startX)
+    },
+    handleTouchMove(event: TouchEvent) {
+      event.preventDefault()
+
+      console.log('handleTouchMove', event)
+      this.endX = event.changedTouches[0].pageX
+      this.$debug('this.endX', this.endX)
+    },
+    handleTouchEnd(event: TouchEvent) {
+      event.preventDefault()
+
+      if (!this.startX || !this.endX) return
+
+      // この数値よりスワイプ距離が短い場合、スライダーは動かない
+      const minimumDistance = 30
+      const distanceX = this.endX - this.startX
+      // 移動距離がminimumDistance以下の場合はreturnする
+      if (Math.abs(distanceX) <= minimumDistance) return
+
+      if (distanceX > 0) {
+        this.$debug('右スワイプ')
+        this.slideToPrev()
+      } else {
+        this.$debug('左スワイプ')
+        this.slideToNext()
+      }
     }
   },
   mounted() {
@@ -165,10 +194,6 @@ export default defineComponent({
 .slider__wrapper {
   display: flex;
   width: 100%;
-}
-
-.slider__item {
-  width: 100%;
-  flex-shrink: 0;
+  translate: 0;
 }
 </style>
