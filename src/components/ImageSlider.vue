@@ -9,7 +9,7 @@
     @dragend="handleDragEnd"
   >
     <div class="slider__container">
-      <div class="slider__wrapper" ref="wrapper">
+      <div class="slider__wrapper" ref="wrapper" :style="{ translate: `${animateTranslate}px 0` }">
         <ImageSlide
           v-for="(image, index) in images"
           :key="image.id"
@@ -28,6 +28,7 @@
 import { type PropType, defineComponent } from 'vue'
 import type { GalleryImageItem } from '@/data/gallery-images'
 import ImageSlide from '@/components/ImageSlide.vue'
+import anime from 'animejs'
 
 // この数値よりスワイプ or ドラッグ距離が短い場合、スライダーは動かない
 const minimumDistance = 30
@@ -55,21 +56,27 @@ export default defineComponent({
     activeIndex: number
     totalSlideLength: number
     slideWidth: number
+    translate: number
+    animateTranslate: number
     touchStartX: number | undefined
     touchEndX: number | undefined
     isDragging: boolean
     dragStartX: number | undefined
     dragEndX: number | undefined
+    animeInstance: anime.AnimeInstance | undefined
   } {
     return {
       activeIndex: 0, // 現在activeなスライドのindex南郷（start: 0）
       totalSlideLength: this.images.length, // スライド総数
       slideWidth: 0, // スライド一枚の横幅（px）
+      translate: 0,
+      animateTranslate: 0,  // アニメーション用translate
       touchStartX: undefined,
       touchEndX: undefined,
       isDragging: false,
       dragStartX: undefined,
-      dragEndX: undefined
+      dragEndX: undefined,
+      animeInstance: undefined
     }
   },
   computed: {
@@ -86,6 +93,27 @@ export default defineComponent({
       // 現在最後のスライドがactiveになっている場合はtrue
       return this.activeIndex === this.totalSlideLength - 1
     }
+  },
+  watch: {
+    translate(newVal) {
+      // スライド移動アニメーション
+      if (this.animeInstance) {
+        this.animeInstance.pause()
+      }
+
+      if (this.isDragging) {
+        // ドラッグ中はアニメーションせずに値を適用する
+        this.animateTranslate = newVal
+      } else {
+        // オブジェクトの値に対してアニメーションさせる
+        this.animeInstance = anime({
+          targets: this,
+          animateTranslate: newVal,
+          duration: 700,
+          easing: 'cubicBezier(0.25, 0.1, 0.25, 1.0)',
+        })
+      }
+    },
   },
   methods: {
     slideToPrev() {
@@ -111,7 +139,8 @@ export default defineComponent({
 
       // update activeIndex
       this.activeIndex = index
-      wrapperElm.style.translate = `${this.calculateTranslate(index) * -1}px 0`
+      // スライドの移動距離を求める
+      this.translate = this.calculateTranslate(index) * -1
     },
     update() {
       // slideWidthをupdateした後に、正いtranslateを設定し直す
@@ -168,20 +197,23 @@ export default defineComponent({
       this.$debug('handleDragStart', event, event.pageX)
     },
     handleDrag(event: DragEvent) {
-      // dragEndイベント発火前に必ずpageXが0になるので、その値は無視する
+      // dragEndイベント発火前に必ずpageXが0になるので、その場合は無視する
       if (!this.isDragging || event.pageX === 0) return
-      this.$debug('handleDrag', event)
       this.dragEndX = event.pageX
+
+      // translateにドラッグ移動距離分だけ値を追加
+      const addTranslate = this.dragEndX - (this.dragStartX ?? 0)
+
+      // translate再計算
+      this.translate = this.calculateTranslate(this.activeIndex) * -1 + addTranslate
     },
-    handleDragEnd(event: DragEvent) {
-      this.$debug('handleDragEnd', event)
+    handleDragEnd() {
       if (!this.isDragging) return
       this.isDragging = false
 
       if (!this.dragStartX || !this.dragEndX) return
 
       const distanceX = this.dragEndX - this.dragStartX
-      this.$debug('distanceX', distanceX)
       // 移動距離がminimumDistance以下の場合はreturnする
       if (Math.abs(distanceX) <= minimumDistance) return
 
