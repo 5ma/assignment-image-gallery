@@ -9,19 +9,19 @@
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue'
 import type { GalleryImageItem } from '@/data/gallery-images'
+import { useImagePath } from '@/composables/use-image-path'
 
 export default defineComponent({
+  setup() {
+    const { getImagePath } = useImagePath()
+    return { getImagePath }
+  },
   props: {
     images: {
       type: Array as PropType<GalleryImageItem[]>,
       required: true
     },
     id: Number
-  },
-  methods: {
-    getImagePath(fileName: string) {
-      return new URL(`../assets/images/${fileName}`, import.meta.url).href
-    }
   }
 })
 </script>
