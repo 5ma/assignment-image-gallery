@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div class="gallery-switcher">
     <ImageGrid :images="images" />
-    <ImageSlider :images="images" />
+    <div class="parent-slider">
+      <ImageSlider :images="images" />
+    </div>
   </div>
 </template>
 
@@ -24,4 +26,19 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@use '@/styles/global/media-query' as mq;
+
+.gallery-switcher {
+  overflow: hidden;
+}
+
+.parent-slider {
+  width: 88%;
+  margin-inline: auto;
+
+  @include mq.pc {
+    width: 85%;
+  }
+}
+</style>
