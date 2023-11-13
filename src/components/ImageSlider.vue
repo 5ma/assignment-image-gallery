@@ -81,19 +81,20 @@ export default defineComponent({
   },
   methods: {
     slideToPrev() {
-      console.log('slide to === PREV ===')
+      this.$debug('=== slide to PREV ===');
+      // this.$debug('slide to === PREV ===')
       // ループモードがfalseで、かつ最初のスライドの場合はこれ以上戻れないのでreturnする
       if (!this.isLoop && this.isFirstSlide) return
       this.slideToMove(this.activeIndex - 1)
     },
     slideToNext() {
-      console.log('slide to === NEXT ===')
+      this.$debug('=== slide to NEXT ===')
       // ループモードがfalseで、かつ最後のスライドの場合はこれ以上進めないのでreturnする
       if (!this.isLoop && this.isLastSlide) return
       this.slideToMove(this.activeIndex + 1)
     },
     slideToMove(index: number) {
-      console.log(`slide to === ${index + 1} ===`)
+      this.$debug(`=== slide to ${index + 1} ===`)
       // index番号に不正な値が渡ってきていないかチェックする
       if (this.isValidIndexNumber(index) === false) return
 
@@ -102,7 +103,6 @@ export default defineComponent({
 
       // update activeIndex
       this.activeIndex = index
-      console.log('this.calculateTranslate(index)', this.calculateTranslate(index))
       wrapperElm.style.translate = `${this.calculateTranslate(index) * -1}px 0`
     },
     update() {
@@ -116,7 +116,6 @@ export default defineComponent({
         // 最初のスライドの幅を取得
         this.slideWidth = itemElms[0].getBoundingClientRect().width
       }
-      console.log('this.slideWidth', this.slideWidth)
     },
     calculateTranslate(index: number) {
       // スライドの移動距離を求める
@@ -127,24 +126,16 @@ export default defineComponent({
     }
   },
   mounted() {
-    console.log('mounted', this.$refs.item)
+    this.$debug('mounted')
     this.$nextTick(() => {
-      this.updateSlideWidth()
-    })
-
-    window.addEventListener('resize', () => {
       this.update()
     })
 
-    window.addEventListener('load', () => {
-      this.updateSlideWidth()
-    })
+    window.addEventListener('resize', this.update)
+    window.addEventListener('load', this.update)
   },
   unmounted() {
-    console.log('unmounted')
-    window.removeEventListener('resize', () => {
-      this.update()
-    })
+    window.removeEventListener('resize', this.update)
   }
 })
 </script>
