@@ -1,8 +1,8 @@
-import type { App } from 'vue';
+import type { App } from 'vue'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $debug: (...args: any[]) => void;
+    $debug: (...args: any[]) => void
   }
 }
 
