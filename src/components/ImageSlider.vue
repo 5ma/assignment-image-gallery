@@ -9,7 +9,7 @@
     @dragend="handleDragEnd"
   >
     <div class="slider__container">
-      <div class="slider__wrapper" ref="wrapper" :style="{ translate: `${animateTranslate}px 0` }">
+      <div class="slider__wrapper" ref="wrapper" :style="{ '--slider-translate': `${animateTranslate}px` }">
         <ImageSlide
           v-for="(image, index) in images"
           :key="image.id"
@@ -31,6 +31,7 @@ import anime from 'animejs'
 import type { GalleryImageItem } from '@/data/gallery-images'
 import ImageSlide from '@/components/ImageSlide.vue'
 import { useQueryParam } from "@/composables/use-query-param";
+import { runInThisContext } from 'vm';
 
 // この数値よりスワイプ or ドラッグ距離が短い場合、スライダーは動かない
 const minimumDistance = 30
@@ -76,17 +77,17 @@ export default defineComponent({
     animeInstance: anime.AnimeInstance | undefined
   } {
     return {
-      activeIndex: 0, // 現在activeなスライドのindex南郷（start: 0）
+      activeIndex: 0,          // 現在activeなスライドのindex南郷（start: 0）
       totalSlideLength: this.images.length, // スライド総数
-      slideWidth: 0, // スライド一枚の横幅（px）
-      translate: 0,
-      animateTranslate: 0, // アニメーション用translate
-      touchStartX: undefined,
-      touchEndX: undefined,
-      isDragging: false,
+      slideWidth: 0,           // スライド一枚の横幅（px）
+      translate: 0,            // スライド移動距離
+      animateTranslate: 0,     // アニメーション用translate
+      touchStartX: undefined,  // スワイプ開始位置
+      touchEndX: undefined,    // スワイプ終了位置
+      isDragging: false,       // マウスでドラッグ中かどうかの判定Flg
       dragStartX: undefined,
       dragEndX: undefined,
-      animeInstance: undefined
+      animeInstance: undefined  // animejsの間ん数の戻り値が入る
     }
   },
   computed: {
@@ -105,25 +106,6 @@ export default defineComponent({
     }
   },
   watch: {
-    translate(newVal) {
-      // スライド移動アニメーション
-      if (this.animeInstance) {
-        this.animeInstance.pause()
-      }
-
-      if (this.isDragging) {
-        // ドラッグ中はアニメーションせずに値を適用する
-        this.animateTranslate = newVal
-      } else {
-        // オブジェクトの値に対してアニメーションさせる
-        this.animeInstance = anime({
-          targets: this,
-          animateTranslate: newVal,
-          duration: 700,
-          easing: 'cubicBezier(0.25, 0.1, 0.25, 1.0)'
-        })
-      }
-    },
     activeIndex(newVal: number) {
       // URLにindex=[number]クエリパラメータを追加
       this.setQueryParam('index', (newVal + 1).toString())
@@ -149,7 +131,7 @@ export default defineComponent({
       if (!this.isLoop && this.isLastSlide) return
       this.slideToMove(this.activeIndex + 1)
     },
-    slideToMove(index: number) {
+    slideToMove(index: number, noTransition: boolean = false) {
       this.$debug(`=== slide to ${index + 1} ===`)
       // index番号に不正な値が渡ってきていないかチェックする
       if (this.isValidIndexNumber(index) === false) return
@@ -161,11 +143,38 @@ export default defineComponent({
       this.activeIndex = index
       // スライドの移動距離を求める
       this.translate = this.calculateTranslate(index) * -1
+      this.animateSlideMove(noTransition)
+    },
+    slideToQueryParamIndex() {
+      // クエリパラメータでindexの指定があればスライド移動させる
+      const slideIndexParam = this.getQueryParam('index');
+      if (!slideIndexParam) return
+
+      const toNumIndexParam = parseInt(slideIndexParam);
+      if (this.isValidIndexNumber(toNumIndexParam - 1) === false) return
+      this.slideToMove(toNumIndexParam - 1, true)
+    },
+    animateSlideMove(noTransition: boolean = false) {
+      if (this.animeInstance) this.animeInstance.pause()
+
+      if (noTransition) {
+        // アニメーションせずに即座に適用する
+        this.animateTranslate = this.translate
+        return
+      }
+
+      // オブジェクトの値に対してアニメーションさせる
+      this.animeInstance = anime({
+        targets: this,
+        animateTranslate: this.translate,
+        duration: 700,
+        easing: 'cubicBezier(0.25, 0.1, 0.25, 1.0)'
+      })
     },
     update() {
       // slideWidthをupdateした後に、正いtranslateを設定し直す
       this.updateSlideWidth()
-      this.slideToMove(this.activeIndex)
+      this.slideToMove(this.activeIndex, true)
     },
     updateSlideWidth() {
       const itemInstance = this.$refs.item as InstanceType<typeof ImageSlide>[]
@@ -226,6 +235,7 @@ export default defineComponent({
 
       // translate再計算
       this.translate = this.calculateTranslate(this.activeIndex) * -1 + addTranslate
+      this.animateSlideMove(true)
     },
     handleDragEnd() {
       if (!this.isDragging) return
@@ -253,15 +263,11 @@ export default defineComponent({
     })
 
     window.addEventListener('resize', this.update)
-    window.addEventListener('load', this.update)
+    window.addEventListener('load', () => {
+      this.update()
+      this.slideToQueryParamIndex()
+    })
 
-    // クエリパラメータでindexの指定があればスライド移動させる
-    const slideIndexParam = this.getQueryParam('index');
-    if (slideIndexParam) {
-      const toNumIndexParam = parseInt(slideIndexParam);
-      if (this.isValidIndexNumber(toNumIndexParam - 1) === false) return
-      this.slideToMove(toNumIndexParam - 1)
-    }
   },
   unmounted() {
     window.removeEventListener('resize', this.update)
@@ -294,6 +300,6 @@ export default defineComponent({
 .slider__wrapper {
   display: flex;
   width: 100%;
-  translate: 0;
+  translate: var(--slider-translate) 0;
 }
 </style>
