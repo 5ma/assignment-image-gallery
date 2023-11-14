@@ -17,6 +17,7 @@
           :image="{ src: image.src, alt: image.alt }"
           :id="image.id"
           :isCurrent="activeIndex === index"
+          :isHide="isHide"
           ref="item"
         />
       </div>
@@ -47,6 +48,10 @@ export default defineComponent({
       default: 20
     },
     isLoop: {
+      type: Boolean,
+      default: false
+    },
+    isHide: {
       type: Boolean,
       default: false
     },
@@ -264,7 +269,7 @@ export default defineComponent({
     left: 0;
     width: 5px;
     height: 100%;
-    background-color: red;
+    /* background-color: red; */
     content: '';
   }
 }

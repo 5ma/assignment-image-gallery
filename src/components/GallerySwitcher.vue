@@ -2,11 +2,12 @@
   <div class="gallery-switcher">
     <div class="gallery-switcher__contents">
       <div class="gallery-switcher__gallery" :aria-hidden="!isGalleryMode">
-        <ImageGrid :images="images" />
+        <ImageGrid :images="images" :isHide="!isGalleryMode" />
       </div>
       <div class="gallery-switcher__slider" :aria-hidden="isGalleryMode">
         <ImageSlider
           :images="images"
+          :isHide="isGalleryMode"
           ref="slider"
           @onUpdateLastStatus="checkIsLast"
           @omUpdateFirstStatus="checkIsFirst"
@@ -16,24 +17,28 @@
   </div>
   <div class="controls">
     <button type="button" class="controls__switcher" @click="toggleViewMode">View</button>
-    <button
-      class="controls__slide-nav controls__slide-nav--prev"
-      type="button"
-      @click="slideToPrev"
-      :disabled="isFirstSlide"
-      v-show="viewMode === 'slider'"
-    >
-      Prev
-    </button>
-    <button
-      class="controls__slide-nav controls__slide-nav--next"
-      type="button"
-      @click="slideToNext"
-      :disabled="isLastSlide"
-      v-show="viewMode === 'slider'"
-    >
-      Next
-    </button>
+    <Transition name="fade">
+      <button
+        class="controls__slide-nav controls__slide-nav--prev"
+        type="button"
+        @click="slideToPrev"
+        :disabled="isFirstSlide"
+        v-show="viewMode === 'slider'"
+      >
+        Prev
+      </button>
+    </Transition>
+    <Transition name="fade">
+      <button
+        class="controls__slide-nav controls__slide-nav--next"
+        type="button"
+        @click="slideToNext"
+        :disabled="isLastSlide"
+        v-show="viewMode === 'slider'"
+      >
+        Next
+      </button>
+    </Transition>
   </div>
 </template>
 
@@ -114,10 +119,12 @@ export default defineComponent({
   overflow-y: auto;
   overscroll-behavior: contain;
   translate: -50% 0;
+  transition: 0s 0s;
 
   &[aria-hidden='true'] {
     visibility: hidden;
     opacity: 0;
+    transition-delay: .6s;
   }
 }
 
@@ -125,10 +132,12 @@ export default defineComponent({
   position: relative;
   width: 88%;
   margin-inline: auto;
+  transition: 0s 0s;
 
   &[aria-hidden='true'] {
     visibility: hidden;
     opacity: 0;
+    transition-delay: .6s;
   }
 
   @include mq.pc {
@@ -229,4 +238,17 @@ export default defineComponent({
     cursor: pointer;
   }
 }
+
+.fade-enter-active {
+  transition: opacity 0.5s ease;
+}
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 </style>

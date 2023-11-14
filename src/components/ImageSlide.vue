@@ -1,6 +1,6 @@
 <template>
   <div class="slide" :class="{ 'is-current': isCurrent }" :data-slide-id="id">
-    <img :src="getImagePath(image.src)" :alt="image.alt" />
+    <img class="slide__img" :src="getImagePath(image.src)" :alt="image.alt" :class="{'is-hide': isHide}" />
   </div>
 </template>
 
@@ -30,6 +30,10 @@ export default defineComponent({
     isCurrent: {
       type: Boolean,
       default: false
+    },
+    isHide: {
+      type: Boolean,
+      default: false
     }
   }
 })
@@ -39,5 +43,14 @@ export default defineComponent({
 .slide {
   flex-shrink: 0;
   width: 100%;
+}
+
+.slide__img {
+  clip-path: polygon(-100% 100%, 100% -100%, 100% 100%);
+  transition: clip-path cubic-bezier(0.29, 0.09, 0.21, 0.98) .6s;
+
+  &.is-hide {
+    clip-path: polygon(100% 100%, 100% 100%, 100% 100%);
+  }
 }
 </style>
