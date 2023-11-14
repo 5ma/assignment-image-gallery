@@ -114,6 +114,12 @@ export default defineComponent({
         })
       }
     },
+    isFirstSlide(newVal) {
+      this.$emit('omUpdateFirstStatus', newVal)
+    },
+    isLastSlide(newVal) {
+      this.$emit('onUpdateLastStatus', newVal)
+    },
   },
   methods: {
     slideToPrev() {
