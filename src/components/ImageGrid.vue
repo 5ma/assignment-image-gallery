@@ -1,7 +1,13 @@
 <template>
   <div class="grid">
     <div v-for="image in images" :key="image.id" class="grid__item">
-      <img :src="getImagePath(image.src)" :alt="image.alt" loading="lazy" class="grid__img" :class="{'is-hide': isHide}" />
+      <img
+        :src="getImagePath(image.src)"
+        :alt="image.alt"
+        loading="lazy"
+        class="grid__img"
+        :class="{ 'is-hide': isHide }"
+      />
     </div>
   </div>
 </template>
@@ -46,7 +52,7 @@ export default defineComponent({
 
 .grid__img {
   clip-path: polygon(0 0, 200% 0, 0 200%);
-  transition: clip-path cubic-bezier(0.29, 0.09, 0.21, 0.98) .6s;
+  transition: clip-path cubic-bezier(0.29, 0.09, 0.21, 0.98) 0.6s;
   &.is-hide {
     clip-path: polygon(0 0, 0 0, 0 0);
   }

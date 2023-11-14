@@ -124,7 +124,7 @@ export default defineComponent({
   &[aria-hidden='true'] {
     visibility: hidden;
     opacity: 0;
-    transition-delay: .6s;
+    transition-delay: 0.6s;
   }
 }
 
@@ -137,7 +137,7 @@ export default defineComponent({
   &[aria-hidden='true'] {
     visibility: hidden;
     opacity: 0;
-    transition-delay: .6s;
+    transition-delay: 0.6s;
   }
 
   @include mq.pc {
@@ -250,5 +250,4 @@ export default defineComponent({
 .fade-leave-to {
   opacity: 0;
 }
-
 </style>
