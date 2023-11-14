@@ -1,10 +1,10 @@
 <template>
   <div class="gallery-switcher">
     <div class="gallery-switcher__contents">
-      <div class="gallery-switcher__gallery">
+      <div class="gallery-switcher__gallery" :aria-hidden="!isGalleryMode">
         <ImageGrid :images="images" />
       </div>
-      <div class="gallery-switcher__slider">
+      <div class="gallery-switcher__slider" :aria-hidden="isGalleryMode">
         <ImageSlider
           :images="images"
           ref="slider"
@@ -15,7 +15,7 @@
     </div>
   </div>
   <div class="controls">
-    <button type="button" class="controls__switcher">View</button>
+    <button type="button" class="controls__switcher" @click="toggleViewMode">View</button>
     <button
       class="controls__slide-nav controls__slide-nav--prev"
       type="button"
@@ -61,6 +61,11 @@ export default defineComponent({
       isLastSlide: false,
     }
   },
+  computed: {
+    isGalleryMode() {
+      return this.viewMode === 'gallery'
+    }
+  },
   methods: {
     slideToPrev() {
       const slider = this.$refs.slider as InstanceType<typeof ImageSlider>
@@ -70,10 +75,15 @@ export default defineComponent({
       const slider = this.$refs.slider as InstanceType<typeof ImageSlider>
       slider.slideToNext()
     },
+    toggleViewMode() {
+      this.viewMode = this.viewMode === 'gallery' ? 'slider' : 'gallery';
+    },
     checkIsLast(value: boolean) {
+      // 子コンポーネントから値を受け取る
       this.isLastSlide = value
     },
     checkIsFirst(value: boolean) {
+      // 子コンポーネントから値を受け取る
       this.isFirstSlide = value
     },
   }
@@ -99,16 +109,15 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 50%;
-  width: 94%;
+  width: 100%;
   height: 100%;
   overflow-y: auto;
   overscroll-behavior: contain;
-  visibility: hidden;
-  opacity: 0;
   translate: -50% 0;
 
-  @include mq.pc {
-    width: 90%;
+  &[aria-hidden="true"] {
+    visibility: hidden;
+    opacity: 0;
   }
 }
 
@@ -116,6 +125,11 @@ export default defineComponent({
   position: relative;
   width: 88%;
   margin-inline: auto;
+
+  &[aria-hidden="true"] {
+    visibility: hidden;
+    opacity: 0;
+  }
 
   @include mq.pc {
     width: 85%;
