@@ -47,8 +47,13 @@ import { defineComponent } from 'vue'
 import ImageSlider from '@/components/ImageSlider.vue'
 import ImageGrid from '@/components/ImageGrid.vue'
 import { galleryImages, type GalleryImageItem } from '@/data/gallery-images'
+import { useQueryParam } from "@/composables/use-query-param";
 
 export default defineComponent({
+  setup() {
+    const { setQueryParam, getQueryParam } = useQueryParam()
+    return { setQueryParam, getQueryParam }
+  },
   components: {
     ImageSlider,
     ImageGrid
@@ -71,6 +76,11 @@ export default defineComponent({
       return this.viewMode === 'gallery'
     }
   },
+  watch: {
+    viewMode() {
+      this.setQueryParam('mode', this.viewMode)
+    }
+  },
   methods: {
     slideToPrev() {
       const slider = this.$refs.slider as InstanceType<typeof ImageSlider>
@@ -90,6 +100,13 @@ export default defineComponent({
     checkIsFirst(value: boolean) {
       // 子コンポーネントから値を受け取る
       this.isFirstSlide = value
+    }
+  },
+  created() {
+    // クエリパラメータでmodeの指定があればviewModeを切り替える
+    const viewModeParam = this.getQueryParam('mode');
+    if (viewModeParam === 'gallery' || viewModeParam === 'slider') {
+      this.viewMode = viewModeParam
     }
   }
 })
@@ -116,8 +133,6 @@ export default defineComponent({
   left: 50%;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  overscroll-behavior: contain;
   translate: -50% 0;
   transition: 0s 0s;
 

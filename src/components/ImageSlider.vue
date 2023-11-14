@@ -27,14 +27,19 @@
 
 <script lang="ts">
 import { type PropType, defineComponent } from 'vue'
+import anime from 'animejs'
 import type { GalleryImageItem } from '@/data/gallery-images'
 import ImageSlide from '@/components/ImageSlide.vue'
-import anime from 'animejs'
+import { useQueryParam } from "@/composables/use-query-param";
 
 // この数値よりスワイプ or ドラッグ距離が短い場合、スライダーは動かない
 const minimumDistance = 30
 
 export default defineComponent({
+  setup() {
+    const { setQueryParam, getQueryParam } = useQueryParam()
+    return { setQueryParam, getQueryParam }
+  },
   components: {
     ImageSlide
   },
@@ -118,6 +123,10 @@ export default defineComponent({
           easing: 'cubicBezier(0.25, 0.1, 0.25, 1.0)'
         })
       }
+    },
+    activeIndex(newVal: number) {
+      // URLにindex=[number]クエリパラメータを追加
+      this.setQueryParam('index', (newVal + 1).toString())
     },
     isFirstSlide(newVal) {
       this.$emit('omUpdateFirstStatus', newVal)
@@ -245,6 +254,14 @@ export default defineComponent({
 
     window.addEventListener('resize', this.update)
     window.addEventListener('load', this.update)
+
+    // クエリパラメータでindexの指定があればスライド移動させる
+    const slideIndexParam = this.getQueryParam('index');
+    if (slideIndexParam) {
+      const toNumIndexParam = parseInt(slideIndexParam);
+      if (this.isValidIndexNumber(toNumIndexParam - 1) === false) return
+      this.slideToMove(toNumIndexParam - 1)
+    }
   },
   unmounted() {
     window.removeEventListener('resize', this.update)
