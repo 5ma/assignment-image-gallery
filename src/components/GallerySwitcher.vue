@@ -47,7 +47,7 @@ import { defineComponent } from 'vue'
 import ImageSlider from '@/components/ImageSlider.vue'
 import ImageGrid from '@/components/ImageGrid.vue'
 import { galleryImages, type GalleryImageItem } from '@/data/gallery-images'
-import { useQueryParam } from "@/composables/use-query-param";
+import { useQueryParam } from '@/composables/use-query-param'
 
 export default defineComponent({
   setup() {
@@ -104,7 +104,7 @@ export default defineComponent({
   },
   created() {
     // クエリパラメータでmodeの指定があればviewModeを切り替える
-    const viewModeParam = this.getQueryParam('mode');
+    const viewModeParam = this.getQueryParam('mode')
     if (viewModeParam === 'gallery' || viewModeParam === 'slider') {
       this.viewMode = viewModeParam
     }

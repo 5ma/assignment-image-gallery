@@ -1,6 +1,13 @@
 <template>
   <div class="grid" ref="wrapper">
-    <div v-for="image in images" :key="image.id" class="grid__item" :data-id="image.id" ref="item" tabindex="0">
+    <div
+      v-for="image in images"
+      :key="image.id"
+      class="grid__item"
+      :data-id="image.id"
+      ref="item"
+      tabindex="0"
+    >
       <img
         :src="getImagePath(image.src)"
         :alt="image.alt"
@@ -16,7 +23,7 @@
 import { defineComponent, type PropType } from 'vue'
 import type { GalleryImageItem } from '@/data/gallery-images'
 import { useImagePath } from '@/composables/use-image-path'
-import { useQueryParam } from "@/composables/use-query-param";
+import { useQueryParam } from '@/composables/use-query-param'
 
 export default defineComponent({
   setup() {
@@ -38,14 +45,14 @@ export default defineComponent({
   methods: {
     scrollToQueryParamIndex() {
       // クエリパラメータでindexの指定があれば移動させる
-      const indexParam = this.getQueryParam('index');
+      const indexParam = this.getQueryParam('index')
       if (indexParam == undefined) return
 
-      const toNumIndexParam = parseInt(indexParam);
+      const toNumIndexParam = parseInt(indexParam)
       const isValidIndex = 0 < toNumIndexParam && toNumIndexParam <= this.images.length
       if (!isValidIndex) return
 
-      const itemElems = this.$refs.item as HTMLDivElement[];
+      const itemElems = this.$refs.item as HTMLDivElement[]
       // クエリパラメータのindexは1スタートなので、-1する
       const targetElm = itemElems[toNumIndexParam - 1]
       this.scrollToTarget(targetElm)

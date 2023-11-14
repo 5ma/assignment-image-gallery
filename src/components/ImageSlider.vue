@@ -9,7 +9,11 @@
     @dragend="handleDragEnd"
   >
     <div class="slider__container">
-      <div class="slider__wrapper" ref="wrapper" :style="{ '--slider-translate': `${animateTranslate}px` }">
+      <div
+        class="slider__wrapper"
+        ref="wrapper"
+        :style="{ '--slider-translate': `${animateTranslate}px` }"
+      >
         <ImageSlide
           v-for="(image, index) in images"
           :key="image.id"
@@ -30,8 +34,8 @@ import { type PropType, defineComponent } from 'vue'
 import anime from 'animejs'
 import type { GalleryImageItem } from '@/data/gallery-images'
 import ImageSlide from '@/components/ImageSlide.vue'
-import { useQueryParam } from "@/composables/use-query-param";
-import { runInThisContext } from 'vm';
+import { useQueryParam } from '@/composables/use-query-param'
+import { runInThisContext } from 'vm'
 
 // この数値よりスワイプ or ドラッグ距離が短い場合、スライダーは動かない
 const minimumDistance = 30
@@ -77,17 +81,17 @@ export default defineComponent({
     animeInstance: anime.AnimeInstance | undefined
   } {
     return {
-      activeIndex: 0,          // 現在activeなスライドのindex南郷（start: 0）
+      activeIndex: 0, // 現在activeなスライドのindex南郷（start: 0）
       totalSlideLength: this.images.length, // スライド総数
-      slideWidth: 0,           // スライド一枚の横幅（px）
-      translate: 0,            // スライド移動距離
-      animateTranslate: 0,     // アニメーション用translate
-      touchStartX: undefined,  // スワイプ開始位置
-      touchEndX: undefined,    // スワイプ終了位置
-      isDragging: false,       // マウスでドラッグ中かどうかの判定Flg
+      slideWidth: 0, // スライド一枚の横幅（px）
+      translate: 0, // スライド移動距離
+      animateTranslate: 0, // アニメーション用translate
+      touchStartX: undefined, // スワイプ開始位置
+      touchEndX: undefined, // スワイプ終了位置
+      isDragging: false, // マウスでドラッグ中かどうかの判定Flg
       dragStartX: undefined,
       dragEndX: undefined,
-      animeInstance: undefined  // animejsの間ん数の戻り値が入る
+      animeInstance: undefined // animejsの間ん数の戻り値が入る
     }
   },
   computed: {
@@ -147,10 +151,10 @@ export default defineComponent({
     },
     slideToQueryParamIndex() {
       // クエリパラメータでindexの指定があればスライド移動させる
-      const slideIndexParam = this.getQueryParam('index');
+      const slideIndexParam = this.getQueryParam('index')
       if (!slideIndexParam) return
 
-      const toNumIndexParam = parseInt(slideIndexParam);
+      const toNumIndexParam = parseInt(slideIndexParam)
       if (this.isValidIndexNumber(toNumIndexParam - 1) === false) return
       this.slideToMove(toNumIndexParam - 1, true)
     },
@@ -267,7 +271,6 @@ export default defineComponent({
       this.update()
       this.slideToQueryParamIndex()
     })
-
   },
   unmounted() {
     window.removeEventListener('resize', this.update)
