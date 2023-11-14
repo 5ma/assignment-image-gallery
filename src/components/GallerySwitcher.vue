@@ -10,7 +10,7 @@
           ref="slider"
           @onUpdateLastStatus="checkIsLast"
           @omUpdateFirstStatus="checkIsFirst"
-          />
+        />
       </div>
     </div>
   </div>
@@ -49,16 +49,16 @@ export default defineComponent({
     ImageGrid
   },
   data(): {
-    images: GalleryImageItem[],
-    viewMode: 'gallery' | 'slider',
-    isFirstSlide: boolean,
+    images: GalleryImageItem[]
+    viewMode: 'gallery' | 'slider'
+    isFirstSlide: boolean
     isLastSlide: boolean
   } {
     return {
       images: galleryImages,
       viewMode: 'slider',
       isFirstSlide: true,
-      isLastSlide: false,
+      isLastSlide: false
     }
   },
   computed: {
@@ -76,7 +76,7 @@ export default defineComponent({
       slider.slideToNext()
     },
     toggleViewMode() {
-      this.viewMode = this.viewMode === 'gallery' ? 'slider' : 'gallery';
+      this.viewMode = this.viewMode === 'gallery' ? 'slider' : 'gallery'
     },
     checkIsLast(value: boolean) {
       // 子コンポーネントから値を受け取る
@@ -85,7 +85,7 @@ export default defineComponent({
     checkIsFirst(value: boolean) {
       // 子コンポーネントから値を受け取る
       this.isFirstSlide = value
-    },
+    }
   }
 })
 </script>
@@ -115,7 +115,7 @@ export default defineComponent({
   overscroll-behavior: contain;
   translate: -50% 0;
 
-  &[aria-hidden="true"] {
+  &[aria-hidden='true'] {
     visibility: hidden;
     opacity: 0;
   }
@@ -126,7 +126,7 @@ export default defineComponent({
   width: 88%;
   margin-inline: auto;
 
-  &[aria-hidden="true"] {
+  &[aria-hidden='true'] {
     visibility: hidden;
     opacity: 0;
   }
@@ -159,9 +159,9 @@ export default defineComponent({
   padding: 5px 20px;
   color: white;
   text-align: center;
-  border: 1px solid #007CF0;
+  border: 1px solid #007cf0;
   border-radius: 5px;
-  transition: .3s ease;
+  transition: 0.3s ease;
   transition-property: color;
 
   &::before {
@@ -173,10 +173,10 @@ export default defineComponent({
     height: 100%;
     pointer-events: none;
     content: '';
-    background: linear-gradient(to right, #007CF0, #00DFD8);
+    background: linear-gradient(to right, #007cf0, #00dfd8);
     background-size: 100% 100%;
     border-radius: 5px;
-    transition: .3s ease;
+    transition: 0.3s ease;
     transition-property: opacity, background-size;
   }
   @include mq.sp {
@@ -187,7 +187,7 @@ export default defineComponent({
   }
   @include mq.hover {
     &:hover {
-      color: #007CF0;
+      color: #007cf0;
       &::before {
         background-size: 200% 100%;
         opacity: 0;
@@ -206,7 +206,7 @@ export default defineComponent({
   background: black;
   border: 1px solid black;
   border-radius: 5px;
-  transition: .3s ease;
+  transition: 0.3s ease;
   transition-property: color, background-color;
   @include mq.sp {
     font-size: func.px-to-rem(14);

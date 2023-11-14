@@ -70,7 +70,7 @@ export default defineComponent({
       totalSlideLength: this.images.length, // スライド総数
       slideWidth: 0, // スライド一枚の横幅（px）
       translate: 0,
-      animateTranslate: 0,  // アニメーション用translate
+      animateTranslate: 0, // アニメーション用translate
       touchStartX: undefined,
       touchEndX: undefined,
       isDragging: false,
@@ -110,7 +110,7 @@ export default defineComponent({
           targets: this,
           animateTranslate: newVal,
           duration: 700,
-          easing: 'cubicBezier(0.25, 0.1, 0.25, 1.0)',
+          easing: 'cubicBezier(0.25, 0.1, 0.25, 1.0)'
         })
       }
     },
@@ -119,7 +119,7 @@ export default defineComponent({
     },
     isLastSlide(newVal) {
       this.$emit('onUpdateLastStatus', newVal)
-    },
+    }
   },
   methods: {
     slideToPrev() {
