@@ -61,7 +61,7 @@ export default defineComponent({
       default: false
     },
     isHide: {
-      type: Boolean,
+      type: Boolean, // gallery viewに切り替え時、画像が消えるアニメーションのクラスをつけるために受け取る引数
       default: false
     },
     id: Number
@@ -155,6 +155,7 @@ export default defineComponent({
       if (!slideIndexParam) return
 
       const toNumIndexParam = parseInt(slideIndexParam)
+      // クエリパラメータで渡ってくる数字は1始まりなので、-1した値を渡す
       if (this.isValidIndexNumber(toNumIndexParam - 1) === false) return
       this.slideToMove(toNumIndexParam - 1, false)
     },
