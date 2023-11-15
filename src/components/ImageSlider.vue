@@ -127,7 +127,6 @@ export default defineComponent({
   methods: {
     slideToPrev() {
       this.$debug('=== slide to PREV ===')
-      // this.$debug('slide to === PREV ===')
       // ループモードがfalseで、かつ最初のスライドの場合はこれ以上戻れないのでreturnする
       if (!this.isLoop && this.isFirstSlide) return
       this.slideToMove(this.activeIndex - 1)
