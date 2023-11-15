@@ -35,7 +35,6 @@ import anime from 'animejs'
 import type { GalleryImageItem } from '@/data/gallery-images'
 import ImageSlide from '@/components/ImageSlide.vue'
 import { useQueryParam } from '@/composables/use-query-param'
-import { runInThisContext } from 'vm'
 
 // この数値よりスワイプ or ドラッグ距離が短い場合、スライダーは動かない
 const minimumDistance = 30
@@ -135,7 +134,7 @@ export default defineComponent({
       if (!this.isLoop && this.isLastSlide) return
       this.slideToMove(this.activeIndex + 1)
     },
-    slideToMove(index: number, noTransition: boolean = false) {
+    slideToMove(index: number, isAnimate: boolean = true) {
       this.$debug(`=== slide to ${index + 1} ===`)
       // index番号に不正な値が渡ってきていないかチェックする
       if (this.isValidIndexNumber(index) === false) return
@@ -145,9 +144,10 @@ export default defineComponent({
 
       // update activeIndex
       this.activeIndex = index
+
       // スライドの移動距離を求める
       this.translate = this.calculateTranslate(index) * -1
-      this.animateSlideMove(noTransition)
+      this.animateSlideMove(isAnimate)
     },
     slideToQueryParamIndex() {
       // クエリパラメータでindexの指定があればスライド移動させる
@@ -156,12 +156,12 @@ export default defineComponent({
 
       const toNumIndexParam = parseInt(slideIndexParam)
       if (this.isValidIndexNumber(toNumIndexParam - 1) === false) return
-      this.slideToMove(toNumIndexParam - 1, true)
+      this.slideToMove(toNumIndexParam - 1, false)
     },
-    animateSlideMove(noTransition: boolean = false) {
+    animateSlideMove(isAnimate: boolean = true) {
       if (this.animeInstance) this.animeInstance.pause()
 
-      if (noTransition) {
+      if (!isAnimate) {
         // アニメーションせずに即座に適用する
         this.animateTranslate = this.translate
         return
@@ -178,7 +178,7 @@ export default defineComponent({
     update() {
       // slideWidthをupdateした後に、正いtranslateを設定し直す
       this.updateSlideWidth()
-      this.slideToMove(this.activeIndex, true)
+      this.slideToMove(this.activeIndex, false)
     },
     updateSlideWidth() {
       const itemInstance = this.$refs.item as InstanceType<typeof ImageSlide>[]
