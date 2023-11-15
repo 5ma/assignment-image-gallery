@@ -244,7 +244,7 @@ export default defineComponent({
 
       // translate再計算
       this.translate = this.calculateTranslate(this.activeIndex) * -1 + addTranslate
-      this.animateSlideMove(true)
+      this.animateSlideMove(false)
     },
     handleDragEnd() {
       if (!this.isDragging) return
