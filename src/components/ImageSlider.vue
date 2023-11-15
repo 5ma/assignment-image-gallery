@@ -56,6 +56,10 @@ export default defineComponent({
       type: Number, // スライド間の余白
       default: 20
     },
+    speed: {
+      type: Number, // スライド移動スピード（ms）
+      default: 700
+    },
     isLoop: {
       type: Boolean,
       default: false
@@ -172,7 +176,7 @@ export default defineComponent({
       this.animeInstance = anime({
         targets: this,
         animateTranslate: this.translate,
-        duration: 700,
+        duration: this.speed,
         easing: 'cubicBezier(0.25, 0.1, 0.25, 1.0)'
       })
     },
