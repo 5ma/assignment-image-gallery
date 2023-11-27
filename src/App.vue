@@ -21,6 +21,7 @@ export default {
   place-items: center;
   min-height: 100svh;
   padding-block: 5vh;
+  touch-action: manipulation;
 }
 
 img {
