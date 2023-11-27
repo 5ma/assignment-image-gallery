@@ -94,7 +94,7 @@ export default defineComponent({
       isDragging: false, // マウスでドラッグ中かどうかの判定Flg
       dragStartX: undefined,
       dragEndX: undefined,
-      animeInstance: undefined // animejsの間ん数の戻り値が入る
+      animeInstance: undefined // animejsの関数の戻り値が入る
     }
   },
   computed: {
